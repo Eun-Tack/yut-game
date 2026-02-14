@@ -42,6 +42,7 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({ players, connections
   // 각 결과별로 그룹화
   const groupByResult = () => {
     const groups: Record<YutResult, { from: string; to: string }[]> = {
+      '빽도': [],
       '도': [],
       '개': [],
       '걸': [],
@@ -66,7 +67,7 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({ players, connections
   };
 
   const resultGroups = groupByResult();
-  const resultOrder: YutResult[] = ['도', '개', '걸', '윷', '모'];
+  const resultOrder: YutResult[] = ['빽도', '도', '개', '걸', '윷', '모'];
 
   return (
     <div className="result-screen">

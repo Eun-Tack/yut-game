@@ -87,6 +87,11 @@ export const GameScreen: React.FC<GameScreenProps> = ({ players: initialPlayers,
     }
   };
 
+  const handleResultCancel = () => {
+    setPendingConnection(null);
+    setSelectingResult(false);
+  };
+
   // 원형 배치를 위한 좌표 계산
   const getPlayerPosition = (index: number, total: number) => {
     const angle = (index * 2 * Math.PI) / total - Math.PI / 2;
@@ -114,12 +119,20 @@ export const GameScreen: React.FC<GameScreenProps> = ({ players: initialPlayers,
     const centerX = window.innerWidth / 2;
     const centerY = window.innerHeight / 2;
 
-    // 중심에서 바깥쪽으로 약간 휘게
+    // 두 점 사이의 거리 계산
+    const distance = Math.sqrt(
+      Math.pow(toPos.x - fromPos.x, 2) + Math.pow(toPos.y - fromPos.y, 2)
+    );
+
+    // 중심에서 바깥쪽으로 약간 휘게 (거리에 비례)
     const dx = midX - centerX;
     const dy = midY - centerY;
     const len = Math.sqrt(dx * dx + dy * dy);
-    const controlX = midX + (dx / len) * 50;
-    const controlY = midY + (dy / len) * 50;
+
+    // len이 너무 작으면 기본값 사용
+    const offset = len > 10 ? (distance * 0.15) : 30;
+    const controlX = len > 10 ? midX + (dx / len) * offset : midX;
+    const controlY = len > 10 ? midY + (dy / len) * offset : midY - 30;
 
     return {
       path: `M ${fromPos.x} ${fromPos.y} Q ${controlX} ${controlY} ${toPos.x} ${toPos.y}`,
@@ -192,13 +205,13 @@ export const GameScreen: React.FC<GameScreenProps> = ({ players: initialPlayers,
         })}
       </svg>
 
-      {/* 도/개/걸/윷/모 선택 모달 */}
+      {/* 빽도/도/개/걸/윷/모 선택 모달 */}
       {selectingResult && (
         <div className="result-modal">
           <div className="result-modal-content">
             <h3>결과를 선택하세요</h3>
             <div className="result-buttons">
-              {(['도', '개', '걸', '윷', '모'] as YutResult[]).map(result => (
+              {(['빽도', '도', '개', '걸', '윷', '모'] as YutResult[]).map(result => (
                 <button
                   key={result}
                   onClick={() => handleResultSelect(result)}
@@ -208,6 +221,9 @@ export const GameScreen: React.FC<GameScreenProps> = ({ players: initialPlayers,
                 </button>
               ))}
             </div>
+            <button onClick={handleResultCancel} className="cancel-button">
+              뒤로
+            </button>
           </div>
         </div>
       )}

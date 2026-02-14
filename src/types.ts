@@ -1,5 +1,5 @@
 // Game types
-export type YutResult = '도' | '개' | '걸' | '윷' | '모';
+export type YutResult = '빽도' | '도' | '개' | '걸' | '윷' | '모';
 
 export interface Player {
   id: string;
